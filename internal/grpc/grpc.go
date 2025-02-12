@@ -7,18 +7,15 @@ import (
 )
 
 type shortener interface {
-	AddURL(url dto.OriginalURL) (error, *dto.ShortURL)
-	GetURL(url dto.ShortURL) (error, *dto.OriginalURL)
-}
-
-type urlStorage interface {
-	AddURL(url dto.OriginalURL) *dto.ShortURL
-	GetURL(url dto.ShortURL) *dto.OriginalURL
+	AddURL(url dto.OriginalURL) (*dto.ShortURL, error)
+	GetURL(url dto.ShortURL) (*dto.OriginalURL, error)
 }
 
 type Handler struct {
-	service shortener
-	storage urlStorage
+	shortener shortener
 }
 
-func Run(ctx context.Context, addr string, app shortener)
+// TODO - сделать метод Run для grpc сервиса, который будет запускать наш сервис
+func Run(ctx context.Context, app shortener) {
+
+}
