@@ -5,3 +5,8 @@ type URL struct {
 	ShortURL    string `db:"shortURL"`
 	OriginalURL string `db:"originalURL"`
 }
+
+type (
+	UrlShortSchema    string
+	OriginalURLSchema string
+)

@@ -59,7 +59,7 @@ func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL) (*dto.ShortURL, error
 
 	query := sq.Insert(URLDB).
 		Columns("shortURL", "originalURL").
-		Values(*shortURL, urlOriginal).
+		Values(shortURL, urlOriginal).
 		PlaceholderFormat(sq.Dollar)
 
 	rawQuery, args, err := query.ToSql()
