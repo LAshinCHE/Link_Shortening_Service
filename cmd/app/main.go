@@ -13,12 +13,17 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var (
+	flagName          = "dbtype"
+	flagDBDesctiption = "Выберите тип базы данных: imdb или postgrace\n"
+)
+
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
 	godotenv.Load()
-	port := os.Getenv("PORT")
+	// grpcPort := os.Getenv("GRPC_PORT")
 	dbUrl := os.Getenv("DBURL")
 
 	dbTypePtr := flag.String(flagName, "imdb", flagDBDesctiption)

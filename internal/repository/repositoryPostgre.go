@@ -50,7 +50,7 @@ func (r *RepositoryPg) GetURL(urlShort dto.ShortURL) (*dto.OriginalURL, error) {
 	return &originalURL, nil
 }
 
-func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL) (*dto.ShortURL, error) {
+func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL) (*dto.ShortURL, error) {
 	shortURL, err := shortener.GenerateShortURL(urlOriginal)
 
 	if err != nil {
@@ -59,7 +59,7 @@ func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL) (*dto.ShortURL, error
 
 	query := sq.Insert(URLDB).
 		Columns("shortURL", "originalURL").
-		Values(shortURL, urlOriginal).
+		Values(*shortURL, urlOriginal).
 		PlaceholderFormat(sq.Dollar)
 
 	rawQuery, args, err := query.ToSql()

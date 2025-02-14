@@ -6,7 +6,6 @@ import (
 
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/dto"
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/repository/schema"
-	"github.com/LAshinCHE/Link_Shortening_Service/internal/shortener"
 )
 
 func NewRepositoryIMDB() *InMemoryURLStorage {
@@ -21,25 +20,18 @@ type InMemoryURLStorage struct {
 }
 
 // TODO - реализвовать логику добавления URL в базу
-func (imdb *InMemoryURLStorage) AddURL(urlOriginalDto dto.OriginalURL) (*dto.ShortURL, error) {
-
-	shortURLPointer, err := shortener.GenerateShortURL(urlOriginalDto)
-
-	if err != nil {
-		return nil, err
-	}
-
+func (imdb *InMemoryURLStorage) AddURL(urlOriginalDto dto.OriginalURL, urlShortDto dto.ShortURL) error {
 	imdb.mu.Lock()
 	defer imdb.mu.Unlock()
 
-	shortURL := toSChemaShort(shortURLPointer)
-	originalURL := toSChemaOriginal(&urlOriginalDto)
+	shortURL := toSChemaShort(urlShortDto)
+	originalURL := toSChemaOriginal(urlOriginalDto)
 
 	if _, ok := imdb.urlStorage[shortURL]; ok {
 		return nil, ErrorExistURL
 	}
 	imdb.urlStorage[shortURL] = originalURL
-	return shortURLPointer, nil
+	return , nil
 }
 
 // TODO - реализвовать логику взятия URL из базу
@@ -47,7 +39,7 @@ func (imdb *InMemoryURLStorage) GetURL(urlShortDto dto.ShortURL) (*dto.OriginalU
 	imdb.mu.Lock()
 	defer imdb.mu.Unlock()
 
-	shortURL := toSChemaShort(&urlShortDto)
+	shortURL := toSChemaShort(urlShortDto)
 
 	originalURL, ok := imdb.urlStorage[shortURL]
 	if !ok {
@@ -57,16 +49,16 @@ func (imdb *InMemoryURLStorage) GetURL(urlShortDto dto.ShortURL) (*dto.OriginalU
 	return &urlOriginalDto, nil
 }
 
-func toSChemaShort(url *dto.ShortURL) schema.UrlShortSchema {
-	return schema.UrlShortSchema(*url)
+func toSChemaShort(url dto.ShortURL) schema.UrlShortSchema {
+	return schema.UrlShortSchema(url)
 }
 
 func toOriginalDTO(url schema.OriginalURLSchema) dto.OriginalURL {
 	return dto.OriginalURL(url)
 }
 
-func toSChemaOriginal(url *dto.OriginalURL) schema.OriginalURLSchema {
-	return schema.OriginalURLSchema(*url)
+func toSChemaOriginal(url dto.OriginalURL) schema.OriginalURLSchema {
+	return schema.OriginalURLSchema(url)
 }
 
 var (

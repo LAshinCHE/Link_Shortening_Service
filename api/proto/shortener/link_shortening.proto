@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package shortener;
 
-option go_package = "github.com/LAshinCHE/Link_Shortening_Service/pkg/grpc/shortener;shortener";
+option go_package = "github.com/LAshinCHE/Link_Shortening_Service/api/proto/shortener";
 
 service Shortener{
-    rpc GetURL(GetURLRequest) returns(GetLinkResponse);
+    rpc GetURL(GetURLRequest) returns(GetURLResponse);
     rpc AddURL(AddURLRequest) returns(AddURLResponse);
 }
 
@@ -13,7 +13,7 @@ message GetURLRequest{
     string shortURL = 1;
 }
 
-message GetLinkResponse{
+message GetURLResponse{
     string originalURL = 1;
 }
 
