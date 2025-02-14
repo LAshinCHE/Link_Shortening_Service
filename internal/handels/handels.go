@@ -17,17 +17,17 @@ var (
 	and uppercase Latin characters, numbers, and the _ symbol (underscore).`)
 )
 
-type shortener interface {
+type service interface {
 	AddURL(ctx context.Context, url dto.OriginalURL) (dto.ShortURL, error)
 	GetURL(ctx context.Context, url dto.ShortURL) (dto.OriginalURL, error)
 }
 
 type Handler struct {
 	pb.UnimplementedShortenerServer
-	service shortener
+	service service
 }
 
-func NewHandler(serv shortener) *Handler {
+func NewHandler(serv service) *Handler {
 	return &Handler{
 		service: serv,
 	}
@@ -50,7 +50,7 @@ func (h *Handler) AddURL(ctx context.Context, in *pb.AddURLRequest) (*pb.AddURLR
 }
 
 func (h *Handler) GetURL(ctx context.Context, in *pb.GetURLRequest) (*pb.GetURLResponse, error) {
-
+	log.Printf("Received: %v", in.GetShortURL())
 	if len(in.GetShortURL()) < 10 {
 		return nil, ErrorWrongShortSizeURL
 	}

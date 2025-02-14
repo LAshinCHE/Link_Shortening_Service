@@ -1,17 +1,15 @@
 version: '3.8'
-
 services:
   db:
-    image: postgres:16
-    container_name: db
+    image: postgres:14
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: url_db
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   app:
     build:
@@ -29,8 +27,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./db/migrations:/app/db/migrations
-    command: sh -c "goose -dir db/migrations postgres 'postgres://postgres:password@db:5432/url_db?sslmode=disable' up && ./link-shortener"
+      - ./db/migrations:/app/migrations
+    command: sh -c "goose -dir /migrations postgres 'postgres://postgres:password@db:5432/url_db?sslmode=disable' up && ./link-shortener"
 
 volumes:
   postgres_data:

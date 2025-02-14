@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package shortener;
+package grpcProto;
 
 option go_package = "github.com/LAshinCHE/Link_Shortening_Service/api/proto/shortener";
 

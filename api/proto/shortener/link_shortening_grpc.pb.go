@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Shortener_GetURL_FullMethodName = "/shortener.Shortener/GetURL"
-	Shortener_AddURL_FullMethodName = "/shortener.Shortener/AddURL"
+	Shortener_GetURL_FullMethodName = "/grpcProto.Shortener/GetURL"
+	Shortener_AddURL_FullMethodName = "/grpcProto.Shortener/AddURL"
 )
 
 // ShortenerClient is the client API for Shortener service.
@@ -142,7 +142,7 @@ func _Shortener_AddURL_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Shortener_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "shortener.Shortener",
+	ServiceName: "grpcProto.Shortener",
 	HandlerType: (*ShortenerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

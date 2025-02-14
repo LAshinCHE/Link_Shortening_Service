@@ -17,7 +17,6 @@ type InMemoryURLStorage struct {
 	urlStorage map[schema.UrlShortSchema]schema.OriginalURLSchema
 }
 
-// TODO - реализвовать логику добавления URL в базу
 func (imdb *InMemoryURLStorage) AddURL(urlOriginalDto dto.OriginalURL, urlShortDto dto.ShortURL) error {
 
 	shortURL := toSChemaShort(urlShortDto)
@@ -30,7 +29,6 @@ func (imdb *InMemoryURLStorage) AddURL(urlOriginalDto dto.OriginalURL, urlShortD
 	return nil
 }
 
-// TODO - реализвовать логику взятия URL из базу
 func (imdb *InMemoryURLStorage) GetURL(urlShortDto dto.ShortURL) (dto.OriginalURL, error) {
 
 	shortURL := toSChemaShort(urlShortDto)
