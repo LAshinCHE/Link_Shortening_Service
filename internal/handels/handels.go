@@ -22,12 +22,18 @@ type shortener interface {
 	GetURL(ctx context.Context, url dto.ShortURL) (*dto.OriginalURL, error)
 }
 
-type hanndler struct {
+type Handler struct {
 	pb.UnimplementedShortenerServer
 	service shortener
 }
 
-func (h *hanndler) AddURL(ctx context.Context, in *pb.AddURLRequest) (*pb.AddURLResponse, error) {
+func NewHandler(serv shortener) *Handler {
+	return &Handler{
+		service: serv,
+	}
+}
+
+func (h *Handler) AddURL(ctx context.Context, in *pb.AddURLRequest) (*pb.AddURLResponse, error) {
 	log.Printf("Received: %v", in.GetOriginalURL())
 	if len(in.GetOriginalURL()) == 0 {
 		return nil, ErrorZeroSizeURL
@@ -43,7 +49,7 @@ func (h *hanndler) AddURL(ctx context.Context, in *pb.AddURLRequest) (*pb.AddURL
 	return &pb.AddURLResponse{ShortURL: string(*shortDTOURL)}, nil
 }
 
-func (h *hanndler) GetURL(ctx context.Context, in *pb.GetURLRequest) (*pb.GetURLResponse, error) {
+func (h *Handler) GetURL(ctx context.Context, in *pb.GetURLRequest) (*pb.GetURLResponse, error) {
 
 	if len(in.GetShortURL()) < 10 {
 		return nil, ErrorWrongShortSizeURL
