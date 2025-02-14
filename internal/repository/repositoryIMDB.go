@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"sync"
 
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/dto"
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/repository/schema"
@@ -15,38 +14,34 @@ func NewRepositoryIMDB() *InMemoryURLStorage {
 }
 
 type InMemoryURLStorage struct {
-	mu         sync.RWMutex
 	urlStorage map[schema.UrlShortSchema]schema.OriginalURLSchema
 }
 
 // TODO - реализвовать логику добавления URL в базу
 func (imdb *InMemoryURLStorage) AddURL(urlOriginalDto dto.OriginalURL, urlShortDto dto.ShortURL) error {
-	imdb.mu.Lock()
-	defer imdb.mu.Unlock()
 
 	shortURL := toSChemaShort(urlShortDto)
 	originalURL := toSChemaOriginal(urlOriginalDto)
 
 	if _, ok := imdb.urlStorage[shortURL]; ok {
-		return nil, ErrorExistURL
+		return ErrorExistURL
 	}
 	imdb.urlStorage[shortURL] = originalURL
-	return , nil
+	return nil
 }
 
 // TODO - реализвовать логику взятия URL из базу
-func (imdb *InMemoryURLStorage) GetURL(urlShortDto dto.ShortURL) (*dto.OriginalURL, error) {
-	imdb.mu.Lock()
-	defer imdb.mu.Unlock()
+func (imdb *InMemoryURLStorage) GetURL(urlShortDto dto.ShortURL) (dto.OriginalURL, error) {
 
 	shortURL := toSChemaShort(urlShortDto)
 
 	originalURL, ok := imdb.urlStorage[shortURL]
 	if !ok {
-		return nil, ErorrNoSuchURLInIMDB
+		return "", ErorrNoSuchURLInIMDB
 	}
+
 	urlOriginalDto := toOriginalDTO(originalURL)
-	return &urlOriginalDto, nil
+	return urlOriginalDto, nil
 }
 
 func toSChemaShort(url dto.ShortURL) schema.UrlShortSchema {

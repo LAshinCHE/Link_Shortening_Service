@@ -7,8 +7,8 @@ import (
 )
 
 type Repository interface {
-	AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL) (error, *dto.ShortURL)
-	GetURL(urlShort dto.ShortURL) (error, *dto.OriginalURL)
+	AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL) error
+	GetURL(url dto.ShortURL) (dto.OriginalURL, error)
 }
 
 type ShortenerService struct {
@@ -21,9 +21,9 @@ func NewShortenerService(r Repository) *ShortenerService {
 	}
 }
 
-func AddURL(ctx context.Context, url dto.OriginalURL) (*dto.ShortURL, error) {
-	return nil, nil
+func (serv *ShortenerService) AddURL(ctx context.Context, url dto.OriginalURL) (dto.ShortURL, error) {
+	return "", nil
 }
-func GetURL(ctx context.Context, url dto.ShortURL) (*dto.OriginalURL, error) {
-	return nil, nil
+func (serv *ShortenerService) GetURL(ctx context.Context, url dto.ShortURL) (dto.OriginalURL, error) {
+	return "", nil
 }

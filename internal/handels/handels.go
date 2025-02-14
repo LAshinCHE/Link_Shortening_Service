@@ -18,8 +18,8 @@ var (
 )
 
 type shortener interface {
-	AddURL(ctx context.Context, url dto.OriginalURL) (*dto.ShortURL, error)
-	GetURL(ctx context.Context, url dto.ShortURL) (*dto.OriginalURL, error)
+	AddURL(ctx context.Context, url dto.OriginalURL) (dto.ShortURL, error)
+	GetURL(ctx context.Context, url dto.ShortURL) (dto.OriginalURL, error)
 }
 
 type Handler struct {
@@ -46,7 +46,7 @@ func (h *Handler) AddURL(ctx context.Context, in *pb.AddURLRequest) (*pb.AddURLR
 		return nil, err
 	}
 
-	return &pb.AddURLResponse{ShortURL: string(*shortDTOURL)}, nil
+	return &pb.AddURLResponse{ShortURL: string(shortDTOURL)}, nil
 }
 
 func (h *Handler) GetURL(ctx context.Context, in *pb.GetURLRequest) (*pb.GetURLResponse, error) {
@@ -68,7 +68,7 @@ func (h *Handler) GetURL(ctx context.Context, in *pb.GetURLRequest) (*pb.GetURLR
 		return nil, err
 	}
 
-	return &pb.GetURLResponse{OriginalURL: string(*originalDTOURL)}, nil
+	return &pb.GetURLResponse{OriginalURL: string(originalDTOURL)}, nil
 }
 
 func ToOriginalURLDTO(url string) dto.OriginalURL {

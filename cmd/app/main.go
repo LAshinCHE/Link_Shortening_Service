@@ -10,10 +10,10 @@ import (
 	"syscall"
 
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/domain"
-	"github.com/LAshinCHE/Link_Shortening_Service/internal/grpc"
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/handels"
 	"github.com/LAshinCHE/Link_Shortening_Service/internal/repository"
 	"github.com/joho/godotenv"
+	"google.golang.org/grpc"
 
 	pb "github.com/LAshinCHE/Link_Shortening_Service/api/proto/shortener"
 )
@@ -34,7 +34,6 @@ func main() {
 	dbTypePtr := flag.String(flagName, "imdb", flagDBDesctiption)
 
 	flag.Parse()
-	// TODO - вынести логику обработки флагов из main
 	var urlStorage repository.URLStorage
 	var err error
 	switch *dbTypePtr {

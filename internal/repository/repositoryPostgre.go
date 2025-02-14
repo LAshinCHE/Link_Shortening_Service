@@ -32,29 +32,29 @@ func NewRepositoryPg(ctx context.Context, connString string) (*RepositoryPg, err
 	return &RepositoryPg{ctx: ctx, db: conn}, nil
 }
 
-func (r *RepositoryPg) GetURL(urlShort dto.ShortURL) (*dto.OriginalURL, error) {
+func (r *RepositoryPg) GetURL(urlShort dto.ShortURL) (dto.OriginalURL, error) {
 	query := sq.Select(urlColumns...).
 		From(URLDB).
 		Where("shortURL = $1", urlShort).PlaceholderFormat(sq.Dollar)
 
 	rawQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	var url schema.URL
 	if err := pgxscan.Select(r.ctx, r.db, url, rawQuery, args); err != nil {
-		return nil, err
+		return "", err
 	}
 	originalURL := urlToOriginal(url)
-	return &originalURL, nil
+	return originalURL, nil
 }
 
-func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL) (*dto.ShortURL, error) {
+func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL) error {
 	shortURL, err := shortener.GenerateShortURL(urlOriginal)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	query := sq.Insert(URLDB).
@@ -64,15 +64,15 @@ func (r *RepositoryPg) AddURL(urlOriginal dto.OriginalURL, urlShort dto.ShortURL
 
 	rawQuery, args, err := query.ToSql()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	_, err = r.db.Exec(r.ctx, rawQuery, args...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return shortURL, nil
+	return nil
 }
 
 func urlToOriginal(url schema.URL) dto.OriginalURL {
