@@ -33,6 +33,7 @@ func (serv *ShortenerService) AddURL(ctx context.Context, url dto.OriginalURL) (
 	}
 	return shortUrl, nil
 }
+
 func (serv *ShortenerService) GetURL(ctx context.Context, url dto.ShortURL) (dto.OriginalURL, error) {
 	return serv.repo.GetURL(url)
 }

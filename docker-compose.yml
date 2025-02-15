@@ -1,7 +1,9 @@
-version: '3.8'
+version: "3.8"
+
 services:
   db:
-    image: postgres:14
+    image: postgres:16
+    container_name: link_shortening_service-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -10,25 +12,41 @@ services:
       - "5432:5432"
     networks:
       - app-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: app
+    container_name: link_shortening_service-app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: password
-      DB_NAME: url_db
+      - STORAGE_TYPE=postgres
+      - DATABASE_URL=postgres://postgres:password@db:5432/url_db?sslmode=disable
+      - GRPC_PORT=:32269
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=url_db
     ports:
       - "8080:8080"
     volumes:
-      - ./db/migrations:/app/migrations
-    command: sh -c "goose -dir /migrations postgres 'postgres://postgres:password@db:5432/url_db?sslmode=disable' up && ./link-shortener"
+      - ./migrations:/app/migrations
+    command: >
+      sh -c "PGHOST=db PGUSER=postgres PGPASSWORD=password PGDATABASE=url_db goose -dir /app/migrations postgres 'postgres://postgres:password@db:5432/url_db?sslmode=disable' up && ./link-shortener"
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

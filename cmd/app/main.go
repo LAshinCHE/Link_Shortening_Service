@@ -20,7 +20,7 @@ import (
 
 var (
 	flagName          = "dbtype"
-	flagDBDesctiption = "Выберите тип базы данных: imdb или postgrace\n"
+	flagDBDesctiption = "Выберите тип базы данных: imdb или postgres\n"
 )
 
 func main() {
@@ -29,17 +29,24 @@ func main() {
 
 	godotenv.Load()
 	grpcPort := os.Getenv("GRPC_PORT")
-	dbUrl := os.Getenv("DBURL")
+	dbUrl, have := os.LookupEnv("DATABASE_URL")
+	if !have {
+		log.Fatal("Dont find database url")
+	}
+	//log.Printf("DBURL: %s", dbUrl)
 
 	dbTypePtr := flag.String(flagName, "imdb", flagDBDesctiption)
 
 	flag.Parse()
+	log.Printf("DBURL: %s", dbUrl)
+	log.Printf("dbtype: %s", *dbTypePtr)
+
 	var urlStorage repository.URLStorage
 	var err error
 	switch *dbTypePtr {
 	case "imdb":
 		urlStorage = repository.NewRepositoryIMDB()
-	case "postgre":
+	case "postgres":
 		urlStorage, err = repository.NewRepositoryPg(ctx, dbUrl)
 		if err != nil {
 			log.Fatalf("При создание базы произошла ошибка: %v", err)

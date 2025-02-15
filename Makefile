@@ -1,3 +1,19 @@
+
+
+build:
+	docker build .
+	docker compose up -d --remove-orphans
+
+restart:
+	docker compose down -v
+	docker compose up --build -d
+
+clean:
+	docker compose down -v
+
+test:
+	go test  -v ./internal/shortener
+
 generate-proto:
 	protoc --go_out=. --go_opt=paths=source_relative \
 		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
