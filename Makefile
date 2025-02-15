@@ -2,7 +2,7 @@
 
 build:
 	docker build .
-	docker compose up -d --remove-orphans
+	docker compose up -d 
 
 restart:
 	docker compose down -v
