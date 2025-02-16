@@ -20,4 +20,11 @@ generate-proto:
 		api/proto/shortener/link_shortening.proto
 
 migrations:
+	go get -u github.com/pressly/goose/v3/cmd/goose
 	export GOOSE_DBSTRING="user=postgres dbname=postgres sslmode=disable password=password"
+
+migration up:
+	goose -dir ./migration up
+
+migration down:
+	goose -dir ./migration up
